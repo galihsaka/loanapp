@@ -9,6 +9,7 @@ import com.enigma.entity.AppUser;
 import com.enigma.entity.Customer;
 import com.enigma.entity.Role;
 import com.enigma.repository.CustomerRepository;
+import com.enigma.repository.ProfilePictureRepository;
 import com.enigma.repository.UserRepository;
 import com.enigma.security.JwtUtil;
 import com.enigma.service.AuthService;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +39,11 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
     private UserService userService;
+    private ProfilePictureRepository profilePictureRepository;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerService, RoleService roleService) {
+    public AuthServiceImpl(UserRepository userRepository, UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerService, RoleService roleService,
+                           ProfilePictureRepository profilePictureRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -47,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
         this.authenticationManager = authenticationManager;
         this.customerService = customerService;
         this.roleService = roleService;
+        this.profilePictureRepository=profilePictureRepository;
     }
 
     @Override
@@ -70,10 +75,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse registerCustomer(CustomerRequest request) {
+    public RegisterResponse registerCustomer(CustomerRequest request, MultipartFile file) {
         List<Role.ERole> storeRole=new ArrayList<>();
         storeRole.add(Role.ERole.valueOf("ROLE_CUSTOMER"));
         List<Role> roles=roleService.getOrSave(storeRole);
+        String oriFileName= file.getOriginalFilename();
         return null;
     }
 

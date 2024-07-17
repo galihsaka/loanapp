@@ -12,7 +12,6 @@ public class CustomerRequest {
     private Date dateOfBirth;
     private String phone;
     private String status;
-    private ProfilePicture profilePicture;
 
     public String getFirstName() {
         return firstName;
@@ -52,13 +51,5 @@ public class CustomerRequest {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public ProfilePicture getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(ProfilePicture profilePicture) {
-        this.profilePicture = profilePicture;
     }
 }
