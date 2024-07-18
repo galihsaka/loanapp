@@ -5,16 +5,16 @@ import com.enigma.entity.Role;
 import java.util.List;
 
 public class LoginResponse {
-    private String email;
+    private String username;
     private String token;
     private List<Role> roles;
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getToken() {
