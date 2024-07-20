@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CustomerService {
-    public void deleteCustomer(String id);
+    public CustomerResponse deleteCustomer(String id);
     public CustomerResponse findCustomerById(String id);
     public CustomerResponse updateCustomerPut(CustomerRequest request, String id);
     public CustomerResponse updateCustomerPatch(CustomerRequest request, String id);

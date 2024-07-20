@@ -42,13 +42,16 @@ public class CustomerServiceImpl implements CustomerService {
         customerResponse.setId(customer.getId());
         customerResponse.setPhone(customer.getPhone());
         customerResponse.setStatus(customer.getStatus());
+        customerResponse.setDeleted(customer.isDeleted());
         return customerResponse;
     }
 
     @Override
-    public void deleteCustomer(String id) {
+    public CustomerResponse deleteCustomer(String id) {
         Customer customer=findCustomerByIdOrThrowNotFound(id);
-        customerRepository.deleteById(id);
+        customer.setDeleted(Boolean.TRUE);
+        customer=customerRepository.save(customer);
+        return convertToCustomerResponse(customer);
     }
 
     @Override

@@ -8,17 +8,15 @@ import com.enigma.dto.response.LoginResponse;
 import com.enigma.dto.response.RegisterResponse;
 import com.enigma.entity.AppUser;
 import com.enigma.entity.Customer;
-import com.enigma.entity.ProfilePicture;
 import com.enigma.entity.Role;
 import com.enigma.repository.CustomerRepository;
-import com.enigma.repository.ProfilePictureRepository;
 import com.enigma.repository.UserRepository;
 import com.enigma.security.JwtUtil;
 import com.enigma.service.AuthService;
 import com.enigma.service.RoleService;
 import com.enigma.service.UserService;
-import com.enigma.utils.exception.CommonException;
 import com.enigma.utils.exception.ResourceNotFoundException;
+import com.enigma.utils.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,12 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
         List<Role.ERole> storeRole=request.getRoles();
         for(int i=0;i< storeRole.size();i++){
             if(storeRole.get(i).name().equals("ROLE_CUSTOMER")){
-                throw new CommonException("Wrong Endpoint");
+                throw new ValidationException("Wrong Endpoint");
             }
         }
         List<Role> roles=roleService.getOrSave(request.getRoles());

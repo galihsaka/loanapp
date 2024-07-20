@@ -59,8 +59,8 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<CustomerResponse>> removeCustomer(@PathVariable String id){
-        customerService.deleteCustomer(id);
-        CommonResponse<CustomerResponse> customerResponseCommonResponse=generateCustomerResponse(HttpStatus.OK.value(), "Customer Deleted Succesfully", Optional.empty());
+        CustomerResponse customerResponseDelete=customerService.deleteCustomer(id);
+        CommonResponse<CustomerResponse> customerResponseCommonResponse=generateCustomerResponse(HttpStatus.OK.value(), "Customer Deleted Succesfully", Optional.of(customerResponseDelete));
         return ResponseEntity.ok(customerResponseCommonResponse);
     }
 

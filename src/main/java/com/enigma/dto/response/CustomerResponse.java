@@ -12,6 +12,15 @@ public class CustomerResponse {
     private Date dateOfBirth;
     private String phone;
     private String status;
+    private Boolean deleted;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public String getId() {
         return id;

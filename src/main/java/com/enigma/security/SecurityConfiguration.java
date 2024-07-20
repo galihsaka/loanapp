@@ -45,11 +45,11 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req ->
                                 req
-//                                        .requestMatchers(WHITE_LIST_URL)
-//                                        .permitAll()
-//                                .requestMatchers("/api/v2/product/**")
-//                                .hasAuthority("CUSTOMER")
-                                        .anyRequest().permitAll()
+                                        .requestMatchers(WHITE_LIST_URL)
+                                        .permitAll()
+//                                .requestMatchers("/api/customer/**")
+//                                .hasAuthority("ROLE_CUSTOMER")
+                                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
