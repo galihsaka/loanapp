@@ -8,7 +8,7 @@ public class LoanType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String type;
     @Column(nullable = false)
     private Double maxLoan;

@@ -16,7 +16,7 @@ public class InstalmentType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private EInstalmentType instalmentType;
 

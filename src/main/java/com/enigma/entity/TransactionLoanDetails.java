@@ -14,17 +14,14 @@ public class TransactionLoanDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    @Column(nullable = false)
     private Date transactionDate;
-    @Column(nullable = false)
     private Double nominal;
-    @ManyToOne
-    @JoinColumn(name = "trx_loan_id")
-    private TransactionLoan loanTransaction;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "trx_loan_id")
+//    private TransactionLoan loanTransaction;
     @ManyToOne
     @JoinColumn(name = "guarantee_picture_id")
     private GuaranteePicture guaranteePicture;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LoanStatus loanStatus; // enum
     private Date createdAt;
@@ -78,13 +75,13 @@ public class TransactionLoanDetails {
         this.nominal = nominal;
     }
 
-    public TransactionLoan getLoanTransaction() {
-        return loanTransaction;
-    }
-
-    public void setLoanTransaction(TransactionLoan loanTransaction) {
-        this.loanTransaction = loanTransaction;
-    }
+//    public TransactionLoan getLoanTransaction() {
+//        return loanTransaction;
+//    }
+//
+//    public void setLoanTransaction(TransactionLoan loanTransaction) {
+//        this.loanTransaction = loanTransaction;
+//    }
 
     public Date getTransactionDate() {
         return transactionDate;

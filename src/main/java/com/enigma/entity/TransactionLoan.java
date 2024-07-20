@@ -25,14 +25,15 @@ public class TransactionLoan {
     private Customer customer;
     @Column(nullable = false)
     private Double nominal;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "trx_loan_detail_id")
+    private TransactionLoanDetails transactionLoanDetails;
     private Date approvedAt;
     private String approvedBy;
     private Date rejectedAt;
     private String rejectedBy;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus; // enum
-    //private List<LoanTransactionDetail> loanTransactionDetails;
     private Date createdAt;
     private Date updatedAt;
 
@@ -42,6 +43,14 @@ public class TransactionLoan {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public TransactionLoanDetails getTransactionLoanDetails() {
+        return transactionLoanDetails;
+    }
+
+    public void setTransactionLoanDetails(TransactionLoanDetails transactionLoanDetails) {
+        this.transactionLoanDetails = transactionLoanDetails;
     }
 
     public Date getUpdatedAt() {
