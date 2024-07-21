@@ -33,9 +33,13 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> getCustomers(){
+    public ResponseEntity<CommonResponse<List<CustomerResponse>>> getCustomers(){
         List<CustomerResponse> customerResponseList= customerService.viewCustomers();
-        return ResponseEntity.ok(customerResponseList);
+        CommonResponse<List<CustomerResponse>> commonResponse=new CommonResponse<>();
+        commonResponse.setStatusCode(HttpStatus.OK.value());
+        commonResponse.setMessage("Success Load All Customer Data");
+        commonResponse.setData(Optional.of(customerResponseList));
+        return ResponseEntity.ok(commonResponse);
     }
 
     @GetMapping("/{id}")
