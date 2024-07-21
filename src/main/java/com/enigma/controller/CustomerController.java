@@ -3,6 +3,7 @@ package com.enigma.controller;
 import com.enigma.dto.request.CustomerRequest;
 import com.enigma.dto.response.CommonResponse;
 import com.enigma.dto.response.CustomerResponse;
+import com.enigma.dto.response.LoanDocumentResponse;
 import com.enigma.dto.response.PhotoProfileResponse;
 import com.enigma.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,18 @@ public class CustomerController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(photoProfileResponseCommonResponse);
+    }
+
+    @PostMapping("/document/{id}")
+    public ResponseEntity<CommonResponse<LoanDocumentResponse>> uploadDocument(@RequestParam("file") MultipartFile multipartFile, @PathVariable String id){
+        LoanDocumentResponse loanDocumentResponse=customerService.uploadLoanDocument(multipartFile,id);
+        CommonResponse<LoanDocumentResponse> loanDocumentResponseCommonResponse=new CommonResponse<>();
+        loanDocumentResponseCommonResponse.setMessage("Succesfully Upload Loan Document");
+        loanDocumentResponseCommonResponse.setStatusCode(HttpStatus.CREATED.value());
+        loanDocumentResponseCommonResponse.setData(Optional.of(loanDocumentResponse));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(loanDocumentResponseCommonResponse);
     }
 
     @DeleteMapping("/{id}")

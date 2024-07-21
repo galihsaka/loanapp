@@ -3,6 +3,7 @@ package com.enigma.service.impl;
 import com.enigma.dto.request.ApproveTransactionLoanRequest;
 import com.enigma.dto.request.RejectTransactionLoanRequest;
 import com.enigma.dto.request.TransactionLoanRequest;
+import com.enigma.dto.response.GuaranteePictureResponse;
 import com.enigma.dto.response.TransactionLoanDetailsResponse;
 import com.enigma.dto.response.TransactionLoanResponse;
 import com.enigma.entity.*;
@@ -13,7 +14,12 @@ import com.enigma.utils.exception.ValidationException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,14 +32,16 @@ public class TransactionLoanServiceImpl implements TransactionLoanService {
     private InstalmentTypeRepository instalmentTypeRepository;
     private TransactionLoanRepository transactionLoanRepository;
     private TransactionLoanDetailRepository transactionLoanDetailRepository;
+    private GuaranteePictureRepository guaranteePictureRepository;
 
     @Autowired
-    public TransactionLoanServiceImpl(CustomerRepository customerRepository, TransactionLoanRepository transactionLoanRepository, TransactionLoanDetailRepository transactionLoanDetailRepository, InstalmentTypeRepository instalmentTypeRepository, LoanTypeRepository loanTypeRepository) {
+    public TransactionLoanServiceImpl(GuaranteePictureRepository guaranteePictureRepository, CustomerRepository customerRepository, TransactionLoanRepository transactionLoanRepository, TransactionLoanDetailRepository transactionLoanDetailRepository, InstalmentTypeRepository instalmentTypeRepository, LoanTypeRepository loanTypeRepository) {
         this.customerRepository = customerRepository;
         this.transactionLoanRepository = transactionLoanRepository;
         this.transactionLoanDetailRepository = transactionLoanDetailRepository;
         this.instalmentTypeRepository = instalmentTypeRepository;
         this.loanTypeRepository = loanTypeRepository;
+        this.guaranteePictureRepository=guaranteePictureRepository;
     }
 
     private TransactionLoanDetailsResponse generateTransactionLoanDetailResponse(TransactionLoanDetails transactionLoanDetails){
@@ -156,6 +164,7 @@ public class TransactionLoanServiceImpl implements TransactionLoanService {
         return generateTransactionLoanResponse(transactionLoan);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public TransactionLoanResponse payLoanTransaction(String id){
         Optional<TransactionLoan> transactionLoanOptional=transactionLoanRepository.findById(id);
         TransactionLoan transactionLoan=transactionLoanOptional.orElseThrow(()->new ResourceNotFoundException("Loan Transaction Not Found"));
@@ -163,5 +172,45 @@ public class TransactionLoanServiceImpl implements TransactionLoanService {
         transactionLoanDetails.setLoanStatus(TransactionLoanDetails.LoanStatus.valueOf("PAID"));
         transactionLoanDetails=transactionLoanDetailRepository.save(transactionLoanDetails);
         return generateTransactionLoanResponse(transactionLoan);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public GuaranteePictureResponse uploadGuaranteePicture(MultipartFile file, String id){
+        Optional<TransactionLoanDetails> transactionLoanDetailsOptional=transactionLoanDetailRepository.findById(id);
+        TransactionLoanDetails transactionLoanDetails=transactionLoanDetailsOptional.orElseThrow(()->new ResourceNotFoundException("Loan Transaction Detail Not Found"));
+        GuaranteePicture guaranteePicture;
+        String oriFileName= file.getOriginalFilename();
+        String fileName=id+"_"+oriFileName;
+        String contentType=file.getContentType();
+        Long size=file.getSize();
+        Optional<GuaranteePicture> guaranteePictureOptional=guaranteePictureRepository.findByName(fileName);
+        GuaranteePicture guaranteePicture1=guaranteePictureOptional.orElse(null);
+        if(guaranteePicture1==null){
+            guaranteePicture=new GuaranteePicture();
+        }else{
+            guaranteePicture=guaranteePicture1;
+        }
+        guaranteePicture.setName(fileName);
+        guaranteePicture.setSize(size);
+        guaranteePicture.setContentType(contentType);
+        try{
+            Path fileStorageLocation=Path.of("assets/guarantee_picture/");
+            Path targetLocation=fileStorageLocation.resolve(fileName);
+            String path="assets/guarantee_picture/"+fileName;
+            guaranteePicture.setPath(path);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+        guaranteePicture=guaranteePictureRepository.save(guaranteePicture);
+        transactionLoanDetails.setGuaranteePicture(guaranteePicture);
+        transactionLoanDetailRepository.save(transactionLoanDetails);
+        GuaranteePictureResponse guaranteePictureResponse=new GuaranteePictureResponse();
+        guaranteePictureResponse.setId(guaranteePicture.getId());
+        guaranteePictureResponse.setName(guaranteePicture.getName());
+        guaranteePictureResponse.setSize(guaranteePicture.getSize());
+        guaranteePictureResponse.setPath(guaranteePicture.getPath());
+        guaranteePictureResponse.setContentType(guaranteePicture.getContentType());
+        return guaranteePictureResponse;
     }
 }

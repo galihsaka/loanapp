@@ -1,12 +1,12 @@
 package com.enigma.repository;
 
-import com.enigma.entity.ProfilePicture;
+import com.enigma.entity.LoanDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface ProfilePictureRepository extends JpaRepository<ProfilePicture, String> {
-    Optional<ProfilePicture> findByName(String name);
+public interface LoanDocumentRepository extends JpaRepository<LoanDocument, String> {
+    Optional<LoanDocument> findByName(String name);
 }

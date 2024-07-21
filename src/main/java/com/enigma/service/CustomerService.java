@@ -2,6 +2,7 @@ package com.enigma.service;
 
 import com.enigma.dto.request.CustomerRequest;
 import com.enigma.dto.response.CustomerResponse;
+import com.enigma.dto.response.LoanDocumentResponse;
 import com.enigma.dto.response.PhotoProfileResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,5 @@ public interface CustomerService {
     public CustomerResponse updateCustomerPatch(CustomerRequest request, String id);
     public List<CustomerResponse> viewCustomers();
     public PhotoProfileResponse uploadProfile(MultipartFile file, String id);
+    public LoanDocumentResponse uploadLoanDocument(MultipartFile file, String id);
 }

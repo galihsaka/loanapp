@@ -5,6 +5,7 @@ import com.enigma.dto.request.LoanTypeRequest;
 import com.enigma.dto.request.RejectTransactionLoanRequest;
 import com.enigma.dto.request.TransactionLoanRequest;
 import com.enigma.dto.response.CommonResponse;
+import com.enigma.dto.response.GuaranteePictureResponse;
 import com.enigma.dto.response.LoanTypeResponse;
 import com.enigma.dto.response.TransactionLoanResponse;
 import com.enigma.service.TransactionLoanService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,16 @@ public class TransactionController {
         TransactionLoanResponse transactionLoanResponse=transactionLoanService.createTransaction(request);
         CommonResponse<TransactionLoanResponse> transactionLoanResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Request Added Successfully", Optional.of(transactionLoanResponse));
         return ResponseEntity.ok(transactionLoanResponseCommonResponse);
+    }
+
+    @PostMapping("/guarantee/{id}")
+    public ResponseEntity<CommonResponse<GuaranteePictureResponse>> uploadGuaranteePicture(@RequestParam("file") MultipartFile multipartFile, @PathVariable String id){
+        GuaranteePictureResponse guaranteePictureResponse= transactionLoanService.uploadGuaranteePicture(multipartFile, id);
+        CommonResponse<GuaranteePictureResponse> guaranteePictureResponseCommonResponse=new CommonResponse<>();
+        guaranteePictureResponseCommonResponse.setStatusCode(HttpStatus.CREATED.value());
+        guaranteePictureResponseCommonResponse.setMessage("Succesfully Upload Guarantee Picture");
+        guaranteePictureResponseCommonResponse.setData(Optional.of(guaranteePictureResponse));
+        return ResponseEntity.ok(guaranteePictureResponseCommonResponse);
     }
 
     @PutMapping("/approve")
