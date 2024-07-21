@@ -27,7 +27,9 @@ public class SecurityConfiguration {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
     private static final String[] WHITE_LIST_URL = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/docs/**",
+            "/swagger-ui/**"
     };
 
     @Bean
