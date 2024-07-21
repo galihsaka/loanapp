@@ -7,6 +7,7 @@ import com.enigma.service.LoanTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class LoanTypeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<LoanTypeResponse>> saveLoanType(@RequestBody LoanTypeRequest loanTypeRequest){
         LoanTypeResponse loanTypeResponse=loanTypeService.createLoanType(loanTypeRequest);
         CommonResponse<LoanTypeResponse> loanTypeResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Type Added Successfully", Optional.of(loanTypeResponse));
@@ -38,6 +40,7 @@ public class LoanTypeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<List<LoanTypeResponse>>> viewAllLoanType(){
         List<LoanTypeResponse> loanTypeResponseList=loanTypeService.viewAllLoanType();
         CommonResponse<List<LoanTypeResponse>> commonResponses=new CommonResponse<>();
@@ -48,6 +51,7 @@ public class LoanTypeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<LoanTypeResponse>> findLoanTypeById(@PathVariable String id){
         LoanTypeResponse loanTypeResponse=loanTypeService.findLoanTypeById(id);
         CommonResponse<LoanTypeResponse> loanTypeResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Type Found", Optional.of(loanTypeResponse));
@@ -55,6 +59,7 @@ public class LoanTypeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<LoanTypeResponse>> updateLoanTypePut(@PathVariable String id, @RequestBody LoanTypeRequest loanTypeRequest){
         LoanTypeResponse loanTypeResponse=loanTypeService.updateLoanTypePut(loanTypeRequest,id);
         CommonResponse<LoanTypeResponse> loanTypeResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Type Updated Successfully", Optional.of(loanTypeResponse));
@@ -62,6 +67,7 @@ public class LoanTypeController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<LoanTypeResponse>> updateLoanTypePatch(@PathVariable String id, @RequestBody LoanTypeRequest loanTypeRequest){
         LoanTypeResponse loanTypeResponse=loanTypeService.updateLoanTypePatch(loanTypeRequest,id);
         CommonResponse<LoanTypeResponse> loanTypeResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Type Updated Successfully", Optional.of(loanTypeResponse));
@@ -69,6 +75,7 @@ public class LoanTypeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     private ResponseEntity<CommonResponse<?>> deleteLoanType(@PathVariable String id){
         loanTypeService.deleteLoanType(id);
         CommonResponse<?> commonResponse=generateCommonResponse(HttpStatus.OK.value(), "Delete Loan Type Success", Optional.empty());

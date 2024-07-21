@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,7 @@ public class TransactionController {
         return transactionLoanResponseCommonResponse;
     }
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<TransactionLoanResponse>> saveTransaction(@RequestBody TransactionLoanRequest request){
         TransactionLoanResponse transactionLoanResponse=transactionLoanService.createTransaction(request);
         CommonResponse<TransactionLoanResponse> transactionLoanResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Loan Request Added Successfully", Optional.of(transactionLoanResponse));
@@ -42,6 +44,7 @@ public class TransactionController {
     }
 
     @PostMapping("/guarantee/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<GuaranteePictureResponse>> uploadGuaranteePicture(@RequestParam("file") MultipartFile multipartFile, @PathVariable String id){
         GuaranteePictureResponse guaranteePictureResponse= transactionLoanService.uploadGuaranteePicture(multipartFile, id);
         CommonResponse<GuaranteePictureResponse> guaranteePictureResponseCommonResponse=new CommonResponse<>();
@@ -52,6 +55,7 @@ public class TransactionController {
     }
 
     @PutMapping("/approve")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<TransactionLoanResponse>> approveTransaction(HttpServletRequest request, @RequestBody ApproveTransactionLoanRequest approveTransactionLoanRequest){
         String username= (String) request.getAttribute("username");
         TransactionLoanResponse transactionLoanResponse=transactionLoanService.approveLoanTransaction(username, approveTransactionLoanRequest);
@@ -60,6 +64,7 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}/pay")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<TransactionLoanResponse>> payTransaction(@PathVariable String id){
         TransactionLoanResponse transactionLoanResponse=transactionLoanService.payLoanTransaction(id);
         CommonResponse<TransactionLoanResponse> transactionLoanResponseCommonResponse=generateCommonResponse(HttpStatus.OK.value(), "Transaction Paid Successfully", Optional.of(transactionLoanResponse));
@@ -67,6 +72,7 @@ public class TransactionController {
     }
 
     @PutMapping("/reject")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<TransactionLoanResponse>> rejectTransaction(HttpServletRequest request, @RequestBody RejectTransactionLoanRequest rejectTransactionLoanRequest){
         String username= (String) request.getAttribute("username");
         TransactionLoanResponse transactionLoanResponse=transactionLoanService.rejectLoanTransaction(username, rejectTransactionLoanRequest);

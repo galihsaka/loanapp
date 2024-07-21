@@ -9,6 +9,7 @@ import com.enigma.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class CustomerController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<List<CustomerResponse>>> getCustomers(){
         List<CustomerResponse> customerResponseList= customerService.viewCustomers();
         CommonResponse<List<CustomerResponse>> commonResponse=new CommonResponse<>();
@@ -51,6 +53,7 @@ public class CustomerController {
     }
 
     @PostMapping("/avatar/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<PhotoProfileResponse>> uploadImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable String id){
         PhotoProfileResponse photoProfileResponse=customerService.uploadProfile(multipartFile, id);
         CommonResponse<PhotoProfileResponse> photoProfileResponseCommonResponse=new CommonResponse<>();
@@ -63,6 +66,7 @@ public class CustomerController {
     }
 
     @PostMapping("/document/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<LoanDocumentResponse>> uploadDocument(@RequestParam("file") MultipartFile multipartFile, @PathVariable String id){
         LoanDocumentResponse loanDocumentResponse=customerService.uploadLoanDocument(multipartFile,id);
         CommonResponse<LoanDocumentResponse> loanDocumentResponseCommonResponse=new CommonResponse<>();
@@ -75,6 +79,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<CustomerResponse>> removeCustomer(@PathVariable String id){
         CustomerResponse customerResponseDelete=customerService.deleteCustomer(id);
         CommonResponse<CustomerResponse> customerResponseCommonResponse=generateCustomerResponse(HttpStatus.OK.value(), "Customer Deleted Succesfully", Optional.of(customerResponseDelete));
@@ -82,6 +87,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<CustomerResponse>> updateCustomerPatch(@PathVariable String id, @RequestBody CustomerRequest request){
         CustomerResponse customerResponse=customerService.updateCustomerPatch(request,id);
         CommonResponse<CustomerResponse> customerResponseCommonResponse=generateCustomerResponse(HttpStatus.OK.value(), "Customer Updated Succesfully", Optional.of(customerResponse));
@@ -89,6 +95,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<CommonResponse<CustomerResponse>> updateCustomerPut(@PathVariable String id, @RequestBody CustomerRequest request){
         CustomerResponse customerResponse=customerService.updateCustomerPut(request,id);
         CommonResponse<CustomerResponse> customerResponseCommonResponse=generateCustomerResponse(HttpStatus.OK.value(), "Customer Updated Succesfully", Optional.of(customerResponse));

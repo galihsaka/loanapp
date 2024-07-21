@@ -8,6 +8,7 @@ import com.enigma.service.InstalmentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class InstalmentTypeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<InstalmentTypeResponse>> saveInstalmentType(@RequestBody InstalmentTypeRequest request){
         InstalmentTypeResponse instalmentTypeResponse=instalmentTypeService.createInstalmentType(request);
         CommonResponse<InstalmentTypeResponse> instalmentTypeResponseCommonResponse=generateInstalmentTypeResponse(HttpStatus.OK.value(), "Create Instalment Type Success", Optional.of(instalmentTypeResponse));
@@ -39,6 +41,7 @@ public class InstalmentTypeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<List<InstalmentTypeResponse>>> viewAllInstalmentType(){
         List<InstalmentTypeResponse> instalmentTypeResponseList=instalmentTypeService.viewAllInstalmentType();
         CommonResponse<List<InstalmentTypeResponse>> instalmentTypeResponseCommonResponse=new CommonResponse<>();
@@ -49,6 +52,7 @@ public class InstalmentTypeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<InstalmentTypeResponse>> getInstalmentTypeById(@PathVariable String id){
         InstalmentTypeResponse instalmentTypeResponse=instalmentTypeService.findInstalmentTypeById(id);
         CommonResponse<InstalmentTypeResponse> instalmentTypeResponseCommonResponse=generateInstalmentTypeResponse(HttpStatus.OK.value(), "Instalment Type Found", Optional.of(instalmentTypeResponse));
@@ -56,6 +60,7 @@ public class InstalmentTypeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<CommonResponse<InstalmentTypeResponse>> updateInstalmentType(@PathVariable String id, @RequestBody InstalmentTypeRequest request){
         InstalmentTypeResponse instalmentTypeResponse=instalmentTypeService.updateInstalmentTypePut(request,id);
         CommonResponse<InstalmentTypeResponse> instalmentTypeResponseCommonResponse=generateInstalmentTypeResponse(HttpStatus.OK.value(), "Update Instalment Type Success", Optional.of(instalmentTypeResponse));
@@ -63,6 +68,7 @@ public class InstalmentTypeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     private ResponseEntity<CommonResponse<?>> deleteInstalmentType(@PathVariable String id){
         instalmentTypeService.deleteInstalmentType(id);
         CommonResponse<?> commonResponse=generateInstalmentTypeResponse(HttpStatus.OK.value(), "Delete Instalment Type Success", Optional.empty());
